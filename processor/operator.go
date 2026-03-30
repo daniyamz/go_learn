@@ -1,51 +1,66 @@
 package processor
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
-func GetInput() string {
-	var input string
-	fmt.Print("Enter Word: ")
-	fmt.Scanln(&input)
-	return input
+func GetInput(reader *bufio.Reader) string {
+	//reader := bufio.NewReader(os.Stdin)
+	fmt.Print("\033[33mEnter Sentence:\033[0m ")
+	text, _ := reader.ReadString('\n')
+	return strings.TrimSpace(text)
 }
 
-func GetChoice() int {
-	for {
-		var choice int
-		fmt.Print("Enter Digit: ")
-		fmt.Scanln(&choice)
+func GetChoice(reader *bufio.Reader) int {
+	fmt.Print("\033[34mChoose an option:\033[0m ")
+	input, _ := reader.ReadString('\n')
+	input = strings.TrimSpace(input)
 
-		if choice != 1 && choice != 2 && choice != 3 {
-			fmt.Println("Wrong Selection. Try again.")
-			continue
-		}
-		return choice
+	num, err := strconv.Atoi(input)
+	if err != nil {
+		return -1
 	}
+
+	return num
+}
+
+func ClearScreen() {
+	fmt.Print("\033[H\033[2J")
 }
 
 func Process(GetInput string, Getchoice int) {
-	for {
-		switch Getchoice {
-		case 1:
-			last := string(GetInput[len(GetInput)-1])
-			fmt.Println("Last word", last)
-		case 2:
-			fmt.Println("Capitalized", strings.ToUpper(GetInput))
-		case 3:
-			var index int
-			fmt.Print("Enter index: ")
-			fmt.Scanln(&index)
+	switch Getchoice {
+	case 1:
+		last := string(GetInput[len(GetInput)-1])
+		fmt.Println("Last character", last)
+	case 2:
+		fmt.Println("Capitalized", strings.ToUpper(GetInput))
+	case 3:
+		for {
+			fmt.Print("\033[36mEnter index:\033[0m ")
+			reader := bufio.NewReader(os.Stdin)
+			indexst, _ := reader.ReadString('\n')
+			indexst = strings.TrimSpace(indexst)
+			index, err := strconv.Atoi(indexst)
+			if err != nil {
+				fmt.Println("Invalid input.")
+				fmt.Println("Press Enter to continue...")
+				reader.ReadString('\n')
+				continue
+			}
 			char := []rune(GetInput)
 			if index < 0 || index >= len(char) {
-				fmt.Println("Error: Index out of range. Try again")
+				fmt.Println("\033[31mError: Index out of range. Try again\033[0m ")
+				fmt.Println("Press Enter to continue...")
+				reader.ReadString('\n')
 				continue
 			}
 			result := string(append(char[:index], char[index+1:]...))
 			fmt.Println(result)
 		}
-
 	}
 }
