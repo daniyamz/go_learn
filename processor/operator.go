@@ -8,16 +8,20 @@ import (
 	"strings"
 )
 
-func GetInput(reader *bufio.Reader) string {
+var Scanner = bufio.NewScanner(os.Stdin)
+
+func GetInput() string {
 	//reader := bufio.NewReader(os.Stdin)
 	fmt.Print("\033[33mEnter Sentence:\033[0m ")
-	text, _ := reader.ReadString('\n')
-	return strings.TrimSpace(text)
+	Scanner.Scan()
+	input := Scanner.Text()
+	return strings.TrimSpace(input)
 }
 
-func GetChoice(reader *bufio.Reader) int {
+func GetChoice() int {
 	fmt.Print("\033[34mChoose an option:\033[0m ")
-	input, _ := reader.ReadString('\n')
+	Scanner.Scan()
+	input := Scanner.Text()
 	input = strings.TrimSpace(input)
 
 	num, err := strconv.Atoi(input)
